@@ -1,0 +1,138 @@
+---
+title: "CLT demonstration 09/12/2017"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+input <- list()
+input$distribution_type <- "binomial"
+input$bi_prob <- .5
+
+```
+
+## Motivation + Basic description
+
+This is project for Data Science Specialization taught by Coursera + John Hopkins University. Author decided to program Shiny application dealing with Central limit theorem.
+
+It should help its users to build intuition around CLT concept through interaction. The application might be used in Stat 101 or equivalent courses.
+
+Presentation contains adjusted version of actual code. If interested, you can find whole implementation in GitHub repository linked below.
+
+[ShinyLink](https://github.com/fridrichmrtn/JHUDataScience/tree/master/DataProducts/wk4/CLT)  
+[GitHubLink](https://github.com/fridrichmrtn/JHUDataScience/tree/master/DataProducts/wk4/CLT)
+
+
+## Getting population distribution - code example
+
+```{r, echo = TRUE, eval = FALSE}
+
+    # getting bionomial population distribution example
+    population_object <- list()
+    
+    if (input$distribution_type=="binomial"){
+      
+      p <- input$bi_prob
+
+      population_object$pop_data <-  rbinom(10000, size = 1,
+                              prob = input$bi_prob)
+      
+      population_object$pop_mju <- mean(population_object$pop_data)
+      population_object$pop_sd <- sd(population_object$pop_data)
+      population_object$density <- density(population_object$pop_data)
+    } 
+    
+```
+
+## Rendering population plot - code example (1/2)
+
+```{r, echo = TRUE, eval = FALSE}
+    
+    # set margin
+    par(mar= c(2.1,4.1,4.1,7.1))
+    
+    # create histogram
+    h<-hist(population_object$pop_data,
+         breaks = "Sturges",
+         col = "#f5f5f5",
+         border = "#e3e3e3",
+         freq=T,
+         main = "",
+         xlab = "Population value")
+    
+    # plot mean
+    abline(v = population_object$pop_mju, lwd = 2, lty = 2)
+
+```
+
+## Rendering population plot - code example (2/2)
+
+```{r, echo = TRUE, eval = FALSE}
+    
+    # separate density
+    density_est <- population_objectv$density
+    
+    # calculate and plot density line
+    lines(density_est$x,density_est$y*diff(h$mids[1:2])*
+            length(population_object$pop_data),
+          col = "#3b7db5", lwd = 2, lty = 3)
+    
+    # plot legend
+    legend("topright", 
+      legend = c(expression(paste(mu," estimate")), "PDF"),
+      col = c("black","#3b7db5"),
+      lty = c(2,3),
+      lwd = c(2,2),
+      box.col = "white"    )
+
+```
+
+## Rendering population plot - result
+
+```{r pressure, echo = F, eval = T}
+
+    population_object <- list()
+    
+    if (input$distribution_type=="binomial"){
+      
+      p <- input$bi_prob
+
+      population_object$pop_data <-  rbinom(10000, size = 1,
+                              prob = input$bi_prob)
+      
+      population_object$pop_mju <- mean(population_object$pop_data)
+      population_object$pop_sd <- sd(population_object$pop_data)
+      population_object$density <- density(population_object$pop_data)
+    } 
+    
+    par(mar= c(2.1,4.1,4.1,7.1))
+    
+    h<-hist(population_object$pop_data,
+         breaks = "Sturges",
+         col = "#f5f5f5",
+         border = "#e3e3e3",
+         freq=T,
+         main = "",
+         xlab = "Population value")
+    
+    abline(v = population_object$pop_mju, lwd = 2, lty = 2)
+    
+        density_est <- population_object$density
+    
+    lines(density_est$x,density_est$y*diff(h$mids[1:2])*
+            length(population_object$pop_data),
+          col = "#3b7db5", lwd = 2, lty = 3)
+    
+    legend(
+      "topright", 
+      legend = c(expression(paste(mu," estimate")), "PDF"),
+      
+      col = c("black","#3b7db5"),
+      lty = c(2,3),
+      lwd = c(2,2),
+      box.col = "white"
+    )
+
+```
+
+## Thank you for reviewing my work!

@@ -1,0 +1,36 @@
+---
+title: "Homersayshi - 2017/11/22"
+output: html_document
+---
+
+```{r setup}
+library(leaflet)
+
+# get bottom left point, hopefully somewhere in Czechia
+anchor.loc <- c(runif(1,49,51),runif(1,14,14.5))
+
+# put rectangles together
+coordinatesDF <- data.frame(lat1 = anchor.loc[1], lon1 = anchor.loc[2],
+                            lat2 = anchor.loc[1]+.008, lon2 = anchor.loc[2]+.002)
+
+coordinatesDF[2,] <-c(anchor.loc[1]+.003, anchor.loc[2]+.002,anchor.loc[1]+.005,anchor.loc[2]+.004)
+coordinatesDF[3,] <- c(anchor.loc[1],anchor.loc[2]+.004,anchor.loc[1]+.008,anchor.loc[2]+.006)
+coordinatesDF[4,] <- c(anchor.loc[1], anchor.loc[2]+.007,anchor.loc[1]+.008, anchor.loc[2]+.009)
+
+# call leaflet
+leaflet() %>% 
+  
+  addTiles() %>%
+    
+    # construct yellow rectangles
+    addRectangles(lat1 = coordinatesDF$lat1, lng1 = coordinatesDF$lon1,
+                lat2 = coordinatesDF$lat2, lng2 = coordinatesDF$lon2,
+                color = "yellow") %>%
+    
+    # make it personal        
+    addMarkers(lat = anchor.loc[1]+.008, lng = anchor.loc[2]+.009,
+                icon = makeIcon("http://bit.ly/2A3J3MN",NULL,45,45),
+                popup = "We love donuts!")
+  
+```
+

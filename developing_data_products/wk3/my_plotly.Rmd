@@ -1,0 +1,47 @@
+---
+title: "Plotly presentation 23/11/2017"
+output: ioslides_presentation
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Europe - fertility vs relationships
+
+```{r, echo=F, message=F}
+library(eurostat)
+library(tidyverse)
+library(lubridate)
+
+marriage_rates <- get_eurostat(id="tps00012",stringsAsFactors=F)
+divorce_rates <- get_eurostat(id="tps00013",stringsAsFactors=F)
+fertility_rates <- get_eurostat(id="tsdde220",stringsAsFactors=F)
+pop <- get_eurostat(id="demo_gind",stringsAsFactors=F) %>% filter(indic_de=="JAN")
+
+df <- rbind.data.frame(marriage_rates,
+                       divorce_rates,
+                       fertility_rates,
+                       pop)
+
+
+df<- spread(df, indic_de, values) %>% 
+      rename(year=time, country=geo,
+             marriage.rate = GNUPRT, divorce.rate = GDIVRT,
+             fertility.rate = TOTFERRT, population = JAN) %>%
+                mutate(year=year(year)) %>%
+                  filter(year>2003 & !country %in% c("RU","EA18","EA19", "EU27", "EU28")) %>%
+                    na.omit()
+
+library(plotly)
+
+gg <- ggplot(df, aes(divorce.rate/marriage.rate, fertility.rate,
+                     size=population, colour=population,
+                     frame=year, ids=country)) +
+        geom_point()
+  
+
+ggplotly(gg)
+
+```
+
+## Thank you for reviewing my work!
